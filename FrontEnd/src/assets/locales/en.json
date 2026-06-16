@@ -4,5 +4,29 @@
     },
     "header": {
         "feedback": "Feedback"
+    },
+    "uploadView": {
+        "title": "Find duplicate files and reclaim valuable storage with fast, content-based scanning.",
+        "support": "Supports images, videos, PDFs, documents, and more"
+    },
+    "trustPoints": {
+        "ariaLabel": "Why Replica is safe to use",
+        "local": {
+            "title": "Runs Locally",
+            "description": "Your files never leave your computer. No cloud uploads. No account required."
+        },
+        "detection": {
+            "title": "Content-Based Detection",
+            "description": "We compare file contents, not filenames, to accurately find duplicates."
+        },
+        "review": {
+            "title": "Review Before Deletion",
+            "description": "Inspect duplicate groups and choose exactly what to keep."
+        }
+    }, 
+    "folderUploader": {
+        "title": "Select a folder",
+        "description": "Choose a folder to scan its files and subfolders.",
+        "uploadButton": "Click to browse for a folder"
     }
 }
