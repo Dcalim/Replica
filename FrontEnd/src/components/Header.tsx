@@ -1,5 +1,6 @@
 import Logo from "../assets/icons/ReplicaLogoAlt.png"
 import { useTranslation } from "react-i18next"
+import Button from "./Button"
 
 const Header = () => {
   const { t } = useTranslation()
@@ -18,12 +19,9 @@ const Header = () => {
           </h1>
         </div>
 
-        <button
-          type="button"
-          className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300"
-        >
+        <Button variant="primary" size="md">
           {t('header.feedback')}
-        </button>
+        </Button>
       </div>
     </header>
   )

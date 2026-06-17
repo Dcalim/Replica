@@ -7,7 +7,9 @@
     },
     "uploadView": {
         "title": "Find duplicate files and reclaim valuable storage with fast, content-based scanning.",
-        "support": "Supports images, videos, PDFs, documents, and more"
+        "support": "Supports images, videos, PDFs, documents, and more",
+        "uploadButton": "Scan",
+        "clearButton": "Clear"
     },
     "trustPoints": {
         "ariaLabel": "Why Replica is safe to use",

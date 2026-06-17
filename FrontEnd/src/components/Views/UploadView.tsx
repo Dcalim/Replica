@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import FolderUploader from '../FolderUploader'
 import TrustPoints from '../TrustPoints'
+import Button from '../Button'
 
 const UploadView = () => {
   const { t } = useTranslation()
@@ -20,7 +21,16 @@ const UploadView = () => {
         <FolderUploader />
       </div>
 
-      <div className="mt-8 w-full">
+      <div className="mt-4 w-full px-12 flex justify-between">
+        <Button variant="secondary" size="md">
+          {t('uploadView.clearButton')}
+        </Button>
+        <Button variant="primary" size="md">
+          {t('uploadView.uploadButton')}
+        </Button>
+      </div>
+
+      <div className="mt-4 w-full">
         <TrustPoints />
       </div>
     </div>
