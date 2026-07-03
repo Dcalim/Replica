@@ -2,26 +2,27 @@ import { useTranslation } from 'react-i18next'
 import FolderSelector from '../FolderSelector'
 import TrustPoints from '../TrustPoints'
 import Button from '../Button'
-import { useAppSelector } from '../../store/store'
-import { useAppDispatch } from '../../store/store'
-import { setSelectedFolderPath } from '../../reducers/files'
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../models/constant";
-
+import { useAppSelector, useAppDispatch } from '../../store/store'
+import { scanFolder, setSelectedFolderPath } from '../../reducers/files'
+import { useNavigate } from "react-router-dom"
+import { ROUTES } from "../../models/constant"
 
 const ScanView = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const selectedFolderPath = useAppSelector((state) => state.files.selectedFolderPath);
+  const error = useAppSelector((state) => state.files.error);
   const navigate = useNavigate();
 
-  const handleScan = () => {
+  const handleScan = async () => {
+    if (!selectedFolderPath) return;
 
+    dispatch(scanFolder(selectedFolderPath));
     navigate(ROUTES.RESULTS);
-  }
+  };
 
   return (
-    <div className="mx-auto flex w-full max-w-4xl flex-col items-center py-12 text-center">
+    <div className="relative mx-auto flex w-full max-w-4xl flex-col items-center py-12 text-center">
 
       <h1 className="max-w-3xl font-['Sora'] text-3xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-4xl">
         {t('scanView.title')}
@@ -35,6 +36,12 @@ const ScanView = () => {
         <FolderSelector />
       </div>
 
+      {error && (
+        <p className="mt-4 px-12 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
+
       <div className="mt-4 w-full px-12 flex justify-between">
         <Button
           variant="secondary"
@@ -44,11 +51,12 @@ const ScanView = () => {
         >
           {t('scanView.clearButton')}
         </Button>
-        <Button 
-        variant="primary" 
-        size="md" 
-        disabled={!selectedFolderPath}
-        onClick={handleScan}>
+        <Button
+          variant="primary"
+          size="md"
+          disabled={!selectedFolderPath}
+          onClick={handleScan}
+        >
           {t('scanView.scanButton')}
         </Button>
       </div>

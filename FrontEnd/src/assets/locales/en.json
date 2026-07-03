@@ -13,11 +13,28 @@
         "title": "Find duplicate files and free up space on your computer.",
         "support": "Replica is a desktop app that scans images, videos, PDFs, documents, and more — entirely on your machine.",
         "scanButton": "Start scan",
+        "scanningButton": "Scanning…",
         "clearButton": "Clear"
+    },
+    "loader": {
+        "scanning": "Scanning for duplicates…",
+        "progress": {
+            "heading": "Your progress",
+            "percentCompleted": "{{percent}}% completed",
+            "inProgress": "In progress",
+            "files": "Scanned {{current}} / {{total}} files",
+            "filesDiscovering": "Discovering files… {{current}} found",
+            "folders": "{{current}} of {{total}} folders processed",
+            "foldersDiscovering": "Scanning folders… {{current}} processed",
+            "phaseDiscovering": "Discovering files and folders",
+            "phaseHashing": "Hashing file contents for duplicates"
+        }
     },
     "resultsView": {
         "title": "Scan results",
-        "backButton": "Scan another folder"
+        "backButton": "Scan another folder",
+        "summary": "Found {{groups}} duplicate groups across {{files}} files.",
+        "empty": "No scan results yet."
     },
     "trustPoints": {
         "ariaLabel": "Why Replica is trustworthy",

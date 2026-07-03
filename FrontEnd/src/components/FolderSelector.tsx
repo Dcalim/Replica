@@ -48,7 +48,7 @@ const FolderSelector = () => {
 
   return (
     <section
-      className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-12 shadow-sm"
       aria-label={t('folderSelector.ariaLabel')}
     >
       <div className="flex flex-col items-center gap-4 text-center">
@@ -79,7 +79,7 @@ const FolderSelector = () => {
             </p>
           </div>
 
-        <div className="flex w-full flex-col gap-2 sm:flex-row">
+        <div className="flex w-full pt-8 flex-col gap-2 sm:flex-row">
           <input
             ref={pathInputRef}
             type="text"
@@ -97,10 +97,6 @@ const FolderSelector = () => {
             {t('folderSelector.browseButton')}
           </Button>
         </div>
-
-        <p className="text-xs text-slate-400">
-          {t('folderSelector.localNote')}
-        </p>
       </div>
     </section>
   );

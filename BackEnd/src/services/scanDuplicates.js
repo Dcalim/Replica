@@ -12,8 +12,10 @@ const { createReadStream } = require("fs");
 
 
 // 🔍 Recursively walk through a directory and collect ALL file paths
-async function walkFiles(rootDir) {
+async function walkFiles(rootDir, callbacks = {}) {
+  const { onFile, onFolder } = callbacks;
   const files = [];
+  let folderCount = 0;
 
   // Inner recursive function
   async function walk(currentDir) {
@@ -27,6 +29,9 @@ async function walkFiles(rootDir) {
       // If we can't access a directory (permissions, etc.), skip it
       return;
     }
+
+    folderCount += 1;
+    onFolder?.(folderCount);
 
     for (const entry of entries) {
       // Build full path (important for nested folders)
@@ -43,6 +48,7 @@ async function walkFiles(rootDir) {
       } else if (entry.isFile()) {
         // If it's a file → store it
         files.push(fullPath);
+        onFile?.(files.length);
       }
     }
   }
@@ -74,9 +80,13 @@ function hashFile(filePath) {
   });
 }
 
+function emitProgress(onProgress, payload) {
+  onProgress?.(payload);
+}
+
 
 // 🚀 MAIN FUNCTION: scans a directory for duplicate files
-async function scanForDuplicates(directory) {
+async function scanForDuplicates(directory, onProgress) {
 
   // Convert to absolute path (safer + consistent)
   const rootDir = path.resolve(directory);
@@ -90,8 +100,41 @@ async function scanForDuplicates(directory) {
     throw error;
   }
 
+  emitProgress(onProgress, {
+    phase: "discovering",
+    current: 0,
+    total: null,
+    unit: "folders",
+  });
+
   // 🔍 Step 1: Get ALL files recursively
-  const allFiles = await walkFiles(rootDir);
+  const allFiles = await walkFiles(rootDir, {
+    onFolder: (folderCount) => {
+      emitProgress(onProgress, {
+        phase: "discovering",
+        current: folderCount,
+        total: null,
+        unit: "folders",
+      });
+    },
+    onFile: (fileCount) => {
+      if (fileCount % 25 === 0 || fileCount === 1) {
+        emitProgress(onProgress, {
+          phase: "discovering",
+          current: fileCount,
+          total: null,
+          unit: "files",
+        });
+      }
+    },
+  });
+
+  emitProgress(onProgress, {
+    phase: "discovering",
+    current: allFiles.length,
+    total: allFiles.length,
+    unit: "files",
+  });
 
   // 🧠 Step 2: Group files by SIZE first (optimization)
   // Why? Files with different sizes can NEVER be duplicates
@@ -118,9 +161,21 @@ async function scanForDuplicates(directory) {
     bySize.get(size).push(filePath);
   }
 
+  const filesToHash = [...bySize.values()]
+    .filter((sameSizeFiles) => sameSizeFiles.length >= 2)
+    .reduce((total, sameSizeFiles) => total + sameSizeFiles.length, 0);
+
+  emitProgress(onProgress, {
+    phase: "hashing",
+    current: 0,
+    total: filesToHash,
+    unit: "files",
+  });
+
   // 🧠 Step 3: Hash only files that share the same size
   // This avoids unnecessary hashing (big performance win)
   const hashGroups = new Map();
+  let hashedCount = 0;
 
   for (const [size, sameSizeFiles] of bySize) {
 
@@ -139,6 +194,14 @@ async function scanForDuplicates(directory) {
         // Skip files that fail hashing
         continue;
       }
+
+      hashedCount += 1;
+      emitProgress(onProgress, {
+        phase: "hashing",
+        current: hashedCount,
+        total: filesToHash,
+        unit: "files",
+      });
 
       // Combine size + hash to form unique key
       const key = `${size}:${hash}`;
