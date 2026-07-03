@@ -1,15 +1,18 @@
-import React from 'react'
-import { useAppDispatch } from '../../store/store'
-import { setCurrentView } from '../../reducers/ui'
-import { VIEWS } from '../../models/constant'
+import Button from "../Button";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../models/constant";
+import { useTranslation } from "react-i18next";
 
 const ResultsView = () => {
-  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div>
-      {/* <button onClick={() => dispatch(setCurrentView(VIEWS.UPLOAD))}>Upload</button> */}
-      <h1>Results</h1>
+      <h1>{t('resultsView.title')}</h1>
+      <Button variant="primary" size="md" onClick={() => navigate(ROUTES.SCAN)}>
+        {t('resultsView.backButton')}
+      </Button>
     </div>
   )
 }

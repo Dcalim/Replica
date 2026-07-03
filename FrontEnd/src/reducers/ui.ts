@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { VIEWS } from '../models/constant';
 
 const initialState = {
   isUploading: false,
-  currentView: VIEWS.UPLOAD,
+  showFeedbackModal: false,
 }
 
 const uiReducer = createSlice({
@@ -13,11 +12,11 @@ const uiReducer = createSlice({
     setIsUploading: (state, action) => {
       state.isUploading = action.payload;
     },
-    setCurrentView: (state, action) => {
-      state.currentView = action.payload;
+    setShowFeedbackModal: (state, action) => {
+      state.showFeedbackModal = action.payload;
     },
   },
 });
 
-export const { setIsUploading, setCurrentView } = uiReducer.actions;
+export const { setIsUploading, setShowFeedbackModal } = uiReducer.actions;
 export default uiReducer.reducer;

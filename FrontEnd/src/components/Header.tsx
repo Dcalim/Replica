@@ -1,9 +1,12 @@
 import Logo from "../assets/icons/ReplicaLogoAlt.png"
 import { useTranslation } from "react-i18next"
 import Button from "./Button"
+import { useAppDispatch } from '../store/store'
+import { setShowFeedbackModal } from '../reducers/ui'
 
 const Header = () => {
   const { t } = useTranslation()
+  const dispatch = useAppDispatch();
 
   return (
     <header className="sticky top-0 z-10 w-full border-b border-blue-100 bg-white">
@@ -19,7 +22,7 @@ const Header = () => {
           </h1>
         </div>
 
-        <Button variant="primary" size="md">
+        <Button variant="primary" size="md" onClick={() => dispatch(setShowFeedbackModal(true))}>
           {t('header.feedback')}
         </Button>
       </div>

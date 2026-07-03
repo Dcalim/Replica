@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
-type TrustPointKey = 'local' | 'detection' | 'review'
+type TrustPointKey = 'desktop' | 'detection' | 'review'
 
 type TrustPoint = {
   key: TrustPointKey
@@ -11,12 +11,13 @@ type TrustPoint = {
 
 const trustPoints: TrustPoint[] = [
   {
-    key: 'local',
+    key: 'desktop',
     iconClass: 'bg-emerald-50 text-emerald-600',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-        <rect x="4" y="11" width="16" height="9" rx="2" />
-        <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+        <rect x="2" y="3" width="20" height="14" rx="2" />
+        <line x1="8" y1="21" x2="16" y2="21" />
+        <line x1="12" y1="17" x2="12" y2="21" />
       </svg>
     ),
   },

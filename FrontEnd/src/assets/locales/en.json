@@ -5,30 +5,42 @@
     "header": {
         "feedback": "Feedback"
     },
-    "uploadView": {
-        "title": "Find duplicate files and reclaim valuable storage with fast, content-based scanning.",
-        "support": "Supports images, videos, PDFs, documents, and more",
-        "uploadButton": "Scan",
+    "feedbackModal": {
+        "heading": "Send feedback",
+        "description": "Feedback form coming soon."
+    },
+    "scanView": {
+        "title": "Find duplicate files and free up space on your computer.",
+        "support": "Replica is a desktop app that scans images, videos, PDFs, documents, and more — entirely on your machine.",
+        "scanButton": "Start scan",
         "clearButton": "Clear"
     },
+    "resultsView": {
+        "title": "Scan results",
+        "backButton": "Scan another folder"
+    },
     "trustPoints": {
-        "ariaLabel": "Why Replica is safe to use",
-        "local": {
-            "title": "Runs Locally",
-            "description": "Your files never leave your computer. No cloud uploads. No account required."
+        "ariaLabel": "Why Replica is trustworthy",
+        "desktop": {
+            "title": "Desktop App",
+            "description": "Installed on your Mac or PC. Scanning runs on your computer — no browser tab, no cloud, and no account required."
         },
         "detection": {
             "title": "Content-Based Detection",
-            "description": "We compare file contents, not filenames, to accurately find duplicates."
+            "description": "Files are hashed on your device. Duplicates are matched by content, not filename, for accurate results."
         },
         "review": {
-            "title": "Review Before Deletion",
-            "description": "Inspect duplicate groups and choose exactly what to keep."
+            "title": "You Stay in Control",
+            "description": "Review every duplicate group before removing anything. Selected files are moved to your system Trash."
         }
-    }, 
-    "folderUploader": {
-        "title": "Select a folder",
-        "description": "Choose a folder to scan its files and subfolders.",
-        "uploadButton": "Click to browse for a folder"
+    },
+    "folderSelector": {
+        "ariaLabel": "Folder selection",
+        "title": "Choose a folder to scan",
+        "description": "Browse for a folder on your computer. Replica reads files directly from your drive.",
+        "selectedLabel": "Selected folder",
+        "pathPlaceholder": "/Users/you/Pictures",
+        "browseButton": "Browse folders",
+        "localNote": "All scanning happens locally. Your files are never uploaded or sent over the internet."
     }
 }

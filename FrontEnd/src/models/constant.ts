@@ -1,7 +1,7 @@
 
 export const APP_NAME = "Replica"
 
-export const VIEWS = {
-    UPLOAD: 'upload',
-    RESULTS: 'results',
-}
+export const ROUTES = {
+  SCAN: "/",
+  RESULTS: "/results",
+} as const;
