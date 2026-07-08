@@ -12,7 +12,8 @@ import Logo from "../assets/icons/ReplicaLogoAlt.png";
 import Button from "./Button";
 import { ROUTES, type AppRoute } from "../models/constant";
 import { useAppDispatch } from "../store/store";
-import { setShowSettingsModal } from "../reducers/ui";
+import { setModalView } from "../reducers/ui";
+import { MODAL_VIEWS } from "../models/constant";
 
 type NavItem = {
   route: AppRoute;
@@ -91,7 +92,7 @@ const SideBarMenu = () => {
           size="md"
           className="w-full justify-start gap-3 px-3"
           ariaLabel={t("header.settings")}
-          onClick={() => dispatch(setShowSettingsModal(true))}
+          onClick={() => dispatch(setModalView(MODAL_VIEWS.SETTINGS))}
         >
           <IoSettingsOutline className="size-5 shrink-0 text-slate-700" aria-hidden />
           <span className="text-sm text-slate-600">{t("header.settings")}</span>

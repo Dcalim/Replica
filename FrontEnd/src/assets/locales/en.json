@@ -21,7 +21,8 @@
         "support": "Replica is a desktop app that scans images, videos, PDFs, documents, and more — entirely on your machine.",
         "scanButton": "Start scan",
         "scanningButton": "Scanning…",
-        "clearButton": "Clear"
+        "clearButton": "Clear",
+        "readyToScan": "Folder selected — you can start the scan"
     },
     "loader": {
         "scanning": "Scanning for duplicates…",
@@ -61,10 +62,12 @@
     "folderSelector": {
         "ariaLabel": "Folder selection",
         "title": "Choose a folder to scan",
-        "description": "Browse for a folder on your computer. Replica reads files directly from your drive.",
+        "description": "Browse your computer and pick a folder to scan for duplicates.",
         "selectedLabel": "Selected folder",
-        "pathPlaceholder": "/Users/you/Pictures",
+        "selectedBadge": "Folder selected",
         "browseButton": "Browse folders",
+        "changeButton": "Choose a different folder",
+        "removeButton": "Remove selection",
         "localNote": "All scanning happens locally. Your files are never uploaded or sent over the internet."
     }
 }

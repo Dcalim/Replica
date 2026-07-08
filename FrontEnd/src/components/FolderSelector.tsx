@@ -1,38 +1,22 @@
-import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import Button from './Button';
 import { setSelectedFolderPath } from '../reducers/files';
 import { useAppDispatch, useAppSelector } from '../store/store';
+import { TbFolder, TbFolderPlus } from 'react-icons/tb';
+import { HiOutlineCheckCircle } from 'react-icons/hi2';
 
-const FolderIcon = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.75"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden
-  >
-    <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
-  </svg>
-);
+const getFolderName = (path: string) => {
+  const parts = path.split(/[/\\]/).filter(Boolean);
+  return parts.at(-1) ?? path;
+};
 
 const FolderSelector = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const pathInputRef = useRef<HTMLInputElement>(null);
+
   const selectedFolderPath = useAppSelector(
     (state) => state.files.selectedFolderPath,
   );
-  
-
-  const handlePathChange = (value: string) => {
-    const trimmed = value.trim();
-    dispatch(setSelectedFolderPath(trimmed || null));
-  };
 
   const handleBrowse = async () => {
     if (window.electron?.selectFolder) {
@@ -40,60 +24,75 @@ const FolderSelector = () => {
       if (folderPath) {
         dispatch(setSelectedFolderPath(folderPath));
       }
-      return;
     }
-
-    pathInputRef.current?.focus();
   };
 
-  return (
-    <section
-      className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-12 shadow-sm"
-      aria-label={t('folderSelector.ariaLabel')}
-    >
-      <div className="flex flex-col items-center gap-4 text-center">
-        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
-          <FolderIcon />
-        </span>
+  const handleClear = () => {
+    dispatch(setSelectedFolderPath(null));
+  };
 
-        {selectedFolderPath && (
-          <div className="w-full">
-            <p className="text-sm font-medium text-slate-500">
+  if (selectedFolderPath) {
+    const folderName = getFolderName(selectedFolderPath);
+
+    return (
+      <section
+        className="w-full rounded-2xl border-2 border-blue-400 bg-blue-50/40 px-6 py-8 shadow-sm ring-4 ring-blue-100/60"
+        aria-label={t('folderSelector.ariaLabel')}
+      >
+        <div className="flex flex-col items-center gap-4 text-center">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-sm">
+            <TbFolder className="size-7" aria-hidden />
+          </span>
+
+          <div className="w-full max-w-xl">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
               {t('folderSelector.selectedLabel')}
             </p>
+            <h2 className="mt-1 font-['Sora'] text-xl font-semibold text-slate-900">
+              {folderName}
+            </h2>
             <p
-              className="mt-1 truncate font-mono text-sm text-slate-900"
+              className="mt-2 truncate rounded-lg bg-white/80 px-3 py-2 font-mono text-sm text-slate-600 ring-1 ring-blue-200"
               title={selectedFolderPath}
             >
               {selectedFolderPath}
             </p>
           </div>
-        )}
+
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+            <Button variant="primary" size="md" onClick={handleBrowse}>
+              {t('folderSelector.changeButton')}
+            </Button>
+            <Button variant="secondary" size="md" onClick={handleClear}>
+              {t('folderSelector.removeButton')}
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className="w-full rounded-2xl border-2 border-dashed border-slate-300 bg-white px-6 py-12 shadow-sm transition hover:border-blue-300 hover:bg-blue-50/20"
+      aria-label={t('folderSelector.ariaLabel')}
+    >
+      <div className="flex flex-col items-center gap-4 text-center">
+        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 ring-1 ring-blue-100">
+          <TbFolderPlus className="size-7" aria-hidden />
+        </span>
 
         <div>
-            <h2 className="text-base font-semibold text-slate-900">
-              {t('folderSelector.title')}
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              {t('folderSelector.description')}
-            </p>
-          </div>
+          <h2 className="text-base font-semibold text-slate-900">
+            {t('folderSelector.title')}
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            {t('folderSelector.description')}
+          </p>
+        </div>
 
-        <div className="flex w-full pt-8 flex-col gap-2 sm:flex-row">
-          <input
-            ref={pathInputRef}
-            type="text"
-            value={selectedFolderPath ?? ''}
-            onChange={(event) => handlePathChange(event.target.value)}
-            placeholder={t('folderSelector.pathPlaceholder')}
-            className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
-          <Button
-            variant="secondary"
-            size="md"
-            className="shrink-0"
-            onClick={handleBrowse}
-          >
+        <div className="flex w-full justify-center pt-4">
+          <Button variant="primary" size="md" onClick={handleBrowse}>
             {t('folderSelector.browseButton')}
           </Button>
         </div>

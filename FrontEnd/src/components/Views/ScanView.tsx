@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import FolderSelector from '../FolderSelector'
-import TrustPoints from '../TrustPoints'
 import Button from '../Button'
 import { useAppSelector, useAppDispatch } from '../../store/store'
 import { scanFolder, setSelectedFolderPath } from '../../reducers/files'
@@ -18,11 +17,12 @@ const ScanView = () => {
     if (!selectedFolderPath) return;
 
     dispatch(scanFolder(selectedFolderPath));
-    navigate(ROUTES.RESULTS);
+    dispatch(setSelectedFolderPath(null));
+    navigate(ROUTES.DUPLICATES);
   };
 
   return (
-    <div className="relative mx-auto flex w-full max-w-4xl flex-col items-center py-12 text-center">
+    <div className="relative m-auto flex w-full max-w-4xl flex-col items-center py-12 text-center">
 
       <h1 className="max-w-3xl font-['Sora'] text-3xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-4xl">
         {t('scanView.title')}
@@ -42,15 +42,7 @@ const ScanView = () => {
         </p>
       )}
 
-      <div className="mt-4 w-full px-12 flex justify-between">
-        <Button
-          variant="secondary"
-          size="md"
-          disabled={!selectedFolderPath}
-          onClick={() => dispatch(setSelectedFolderPath(null))}
-        >
-          {t('scanView.clearButton')}
-        </Button>
+      <div className="mt-4 w-full px-12 flex justify-end">
         <Button
           variant="primary"
           size="md"
@@ -59,10 +51,6 @@ const ScanView = () => {
         >
           {t('scanView.scanButton')}
         </Button>
-      </div>
-
-      <div className="mt-4 w-full">
-        <TrustPoints />
       </div>
     </div>
   )
