@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   isUploading: false,
-  showFeedbackModal: false,
+  showSettingsModal: false,
 }
 
 const uiReducer = createSlice({
@@ -12,11 +12,11 @@ const uiReducer = createSlice({
     setIsUploading: (state, action) => {
       state.isUploading = action.payload;
     },
-    setShowFeedbackModal: (state, action) => {
-      state.showFeedbackModal = action.payload;
+    setShowSettingsModal: (state, action) => {
+      state.showSettingsModal = action.payload;
     },
   },
 });
 
-export const { setIsUploading, setShowFeedbackModal } = uiReducer.actions;
+export const { setIsUploading, setShowSettingsModal } = uiReducer.actions;
 export default uiReducer.reducer;

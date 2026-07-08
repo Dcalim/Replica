@@ -3,11 +3,18 @@
         "appName": "Replica"
     },
     "header": {
-        "feedback": "Feedback"
+        "settings": "Settings"
     },
-    "feedbackModal": {
-        "heading": "Send feedback",
-        "description": "Feedback form coming soon."
+    "sidebar": {
+        "ariaLabel": "Main navigation",
+        "scan": "Scan",
+        "duplicates": "Duplicates",
+        "dashboard": "Dashboard",
+        "history": "History"
+    },
+    "settingsModal": {
+        "heading": "Settings",
+        "description": "Settings coming soon."
     },
     "scanView": {
         "title": "Find duplicate files and free up space on your computer.",
