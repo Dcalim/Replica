@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from "react";
+import Button from "./Button";
 
 export interface ModalProps {
   show: boolean;
@@ -61,12 +62,7 @@ const Modal = ({
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="presentation"
     >
-      <button
-        type="button"
-        className="absolute inset-0 bg-slate-900/40"
-        aria-label="Close modal"
-        onClick={onClose}
-      />
+      <Button variant="overlay" ariaLabel="Close modal" onClick={onClose} />
 
       <div
         role="dialog"
@@ -82,14 +78,15 @@ const Modal = ({
             {heading}
           </h2>
 
-          <button
-            type="button"
-            className="rounded-lg p-1 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-100"
-            aria-label="Close"
+          <Button
+            variant="clear"
+            iconOnly
+            size="sm"
+            ariaLabel="Close"
             onClick={onClose}
           >
             <CloseIcon />
-          </button>
+          </Button>
         </div>
 
         {children && (

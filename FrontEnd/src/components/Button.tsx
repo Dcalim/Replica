@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 export interface ButtonProps {
-  variant?: "primary" | "secondary" | "alert" | "clear";
+  variant?: "primary" | "secondary" | "alert" | "clear" | "icon" | "link" | "overlay";
   size?: "sm" | "md" | "lg";
   children?: ReactNode;
   iconOnly?: boolean;
@@ -20,6 +20,12 @@ const variantClasses: Record<NonNullable<ButtonProps["variant"]>, string> = {
     "bg-red-600 text-white hover:bg-red-500 focus:ring-red-300",
   clear:
     "border-0 bg-transparent text-slate-500 shadow-none hover:bg-slate-100 hover:text-slate-700 focus:ring-slate-300",
+  icon:
+    "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 focus:ring-slate-300",
+  link:
+    "border-0 bg-transparent p-0 font-medium text-slate-900 shadow-none hover:bg-transparent hover:text-blue-600 focus:ring-blue-100",
+  overlay:
+    "absolute inset-0 rounded-none border-0 bg-slate-900/40 p-0 shadow-none hover:bg-slate-900/40 focus:ring-0",
 };
 
 const sizeClasses: Record<NonNullable<ButtonProps["size"]>, string> = {
@@ -44,11 +50,20 @@ const Button = ({
   ariaLabel,
   onClick,
 }: ButtonProps) => {
+  const skipSizePadding = variant === "overlay" || variant === "link";
+  const skipShadow = variant === "clear" || variant === "link" || variant === "overlay";
+
   const classes = [
-    "inline-flex items-center justify-center rounded-lg font-medium transition focus:outline-none focus:ring-2 disabled:pointer-events-none disabled:opacity-50",
-    variant === "clear" ? "shadow-none" : "shadow-sm",
+    variant === "overlay"
+      ? "block"
+      : "inline-flex items-center justify-center rounded-lg font-medium transition focus:outline-none focus:ring-2 disabled:pointer-events-none disabled:opacity-50",
+    skipShadow ? "shadow-none" : "shadow-sm",
     variantClasses[variant],
-    iconOnly ? iconOnlySizeClasses[size] : sizeClasses[size],
+    skipSizePadding
+      ? ""
+      : iconOnly
+        ? iconOnlySizeClasses[size]
+        : sizeClasses[size],
     className,
   ]
     .filter(Boolean)

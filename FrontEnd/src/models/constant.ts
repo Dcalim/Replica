@@ -11,6 +11,7 @@ export const ROUTES = {
 export const MODAL_VIEWS = {
   NONE: "none",
   SETTINGS: "settings",
+  PREVIEW: "preview",
 } as const;
 
 

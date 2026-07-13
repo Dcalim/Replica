@@ -1,19 +1,17 @@
 import { useTranslation } from "react-i18next";
 import Modal from "../Modal";
-import { setModalView } from "../../reducers/ui";
-import { useAppDispatch, useAppSelector } from "../../store/store";
-import { MODAL_VIEWS } from "../../models/constant";
+import { closeModal } from "../../reducers/ui";
+import { useAppDispatch } from "../../store/store";
 
 const SettingsModal = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const modalView = useAppSelector((state) => state.ui.modalView);
 
   return (
     <Modal
-      show={modalView === MODAL_VIEWS.SETTINGS}
+      show
       heading={t("settingsModal.heading")}
-      onClose={() => dispatch(setModalView(MODAL_VIEWS.NONE))}
+      onClose={() => dispatch(closeModal())}
     >
       <p>{t("settingsModal.description")}</p>
     </Modal>

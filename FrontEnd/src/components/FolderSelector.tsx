@@ -3,7 +3,6 @@ import Button from './Button';
 import { setSelectedFolderPath } from '../reducers/files';
 import { useAppDispatch, useAppSelector } from '../store/store';
 import { TbFolder, TbFolderPlus } from 'react-icons/tb';
-import { HiOutlineCheckCircle } from 'react-icons/hi2';
 
 const getFolderName = (path: string) => {
   const parts = path.split(/[/\\]/).filter(Boolean);
@@ -13,6 +12,9 @@ const getFolderName = (path: string) => {
 const FolderSelector = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+
+  const store = useAppSelector(state => state);
+  console.log(store);
 
   const selectedFolderPath = useAppSelector(
     (state) => state.files.selectedFolderPath,

@@ -47,7 +47,6 @@ const navItems: NavItem[] = [
 const SideBarMenu = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-
   const itemClass = (isActive: boolean) =>
     [
       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",

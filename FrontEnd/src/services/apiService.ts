@@ -24,11 +24,16 @@ const checkHealth = async (): Promise<HealthResult> => {
   return data;
 };
 
+const getFilePreviewUrl = (filePath: string) =>
+  `${axiosInstance.defaults.baseURL}/files/preview?path=${encodeURIComponent(filePath)}`;
+
 const apiService = {
   scanFolder,
   scanFolderWithProgress,
   checkHealth,
+  getFilePreviewUrl,
 };
 
 export type { ScanProgressEvent };
+export { getFilePreviewUrl };
 export default apiService;

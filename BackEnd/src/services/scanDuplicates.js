@@ -218,7 +218,7 @@ async function scanForDuplicates(directory, onProgress) {
 
   // 🧹 Step 4: Keep only groups with actual duplicates (2+ files)
   const duplicates = [...hashGroups.values()].filter(
-    (group) => group.files.length >= 1
+    (group) => group.files.length >= 2
   );
 
   // 💾 Step 5: Calculate how much space can be recovered
