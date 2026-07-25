@@ -14,24 +14,30 @@ const scanFolder = async (directory: string): Promise<ScanResult> => {
     "/files/scan",
     payload,
   );
-
   return data;
 };
 
 const checkHealth = async (): Promise<HealthResult> => {
   const { data } = await axiosInstance.get<HealthResult>("/health");
-
   return data;
 };
 
 const getFilePreviewUrl = (filePath: string) =>
   `${axiosInstance.defaults.baseURL}/files/preview?path=${encodeURIComponent(filePath)}`;
 
+const deleteDuplicates = async (filePath: string): Promise<void> => {
+  const { data } = await axiosInstance.delete<void>("/files/delete", {
+    data: { filePath },
+  });
+  return data;
+};
+
 const apiService = {
   scanFolder,
   scanFolderWithProgress,
   checkHealth,
   getFilePreviewUrl,
+  deleteDuplicates,
 };
 
 export type { ScanProgressEvent };

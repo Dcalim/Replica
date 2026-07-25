@@ -9,6 +9,7 @@ const crypto = require("crypto");
 
 // Used to stream file data (better for large files than reading all at once)
 const { createReadStream } = require("fs");
+const { shell } = require("electron");
 
 
 // 🔍 Recursively walk through a directory and collect ALL file paths
@@ -238,6 +239,23 @@ async function scanForDuplicates(directory, onProgress) {
     reclaimableBytes,
     duplicates,
   };
+}
+
+async function deleteDuplicates(filePath) {
+  const stat = await fs.stat(filePath);
+  if (!stat.isDirectory()) {
+    const error = new Error("Path is not a directory.");
+    error.status = 400;
+    throw error;
+  }
+
+  const allFiles = await walkFiles(filePath, {
+    onFile: (file) => {
+      shell.trashItem(file);
+    },
+  });
+
+  return allFiles;
 }
 
 

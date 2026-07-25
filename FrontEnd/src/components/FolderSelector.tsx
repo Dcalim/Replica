@@ -13,9 +13,6 @@ const FolderSelector = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const store = useAppSelector(state => state);
-  console.log(store);
-
   const selectedFolderPath = useAppSelector(
     (state) => state.files.selectedFolderPath,
   );

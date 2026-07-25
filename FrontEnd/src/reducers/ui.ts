@@ -6,7 +6,6 @@ const initialState = {
   isUploading: false,
   modalView: MODAL_VIEWS.NONE as ModalView,
   previewClusterKey: null as string | null,
-  duplicateFilter: "",
 }
 
 const uiReducer = createSlice({
@@ -30,9 +29,6 @@ const uiReducer = createSlice({
       state.modalView = MODAL_VIEWS.NONE;
       state.previewClusterKey = null;
     },
-    setDuplicateFilter: (state, action: PayloadAction<string>) => {
-      state.duplicateFilter = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(scanFolder.pending, (state) => {
@@ -48,6 +44,5 @@ export const {
   setPreviewClusterKey,
   openPreviewModal,
   closeModal,
-  setDuplicateFilter,
 } = uiReducer.actions;
 export default uiReducer.reducer;

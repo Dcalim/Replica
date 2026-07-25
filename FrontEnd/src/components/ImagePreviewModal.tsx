@@ -7,16 +7,10 @@ import {
 } from "react-icons/hi2";
 import Button from "./Button";
 import FilePreviewDisplay from "./FilePreviewDisplay";
-import {
-  filterDuplicateClusters,
-  getDuplicateClusters,
-  getPreviewableClusters,
-} from "../selectors/duplicates";
 import { closeModal, setPreviewClusterKey } from "../reducers/ui";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
   formatBytes,
-  getClusterKey,
   getFileName,
   isPreviewableFile,
 } from "../utils/fileHelpers";
@@ -26,28 +20,21 @@ const ImagePreviewModal = () => {
   const dispatch = useAppDispatch();
   const previewClusterKey = useAppSelector((state) => state.ui.previewClusterKey);
   const duplicateFiles = useAppSelector((state) => state.files.duplicateFiles);
-  const duplicateFilter = useAppSelector((state) => state.ui.duplicateFilter);
   const [fileIndex, setFileIndex] = useState(0);
 
   const clusters = useMemo(
     () =>
-      getPreviewableClusters(
-        filterDuplicateClusters(
-          getDuplicateClusters(duplicateFiles),
-          duplicateFilter,
-        ),
+      (duplicateFiles?.duplicates ?? []).filter((group) =>
+        group.files.some(isPreviewableFile),
       ),
-    [duplicateFiles, duplicateFilter],
+    [duplicateFiles],
   );
 
   const clusterIndex = useMemo(
     () =>
       previewClusterKey === null
         ? -1
-        : clusters.findIndex(
-            (group) =>
-              getClusterKey(group.hash, group.size) === previewClusterKey,
-          ),
+        : clusters.findIndex((group) => group.hash === previewClusterKey),
     [clusters, previewClusterKey],
   );
 
@@ -74,9 +61,7 @@ const ImagePreviewModal = () => {
       return;
     }
 
-    dispatch(
-      setPreviewClusterKey(getClusterKey(nextCluster.hash, nextCluster.size)),
-    );
+    dispatch(setPreviewClusterKey(nextCluster.hash));
   };
 
   useEffect(() => {
@@ -169,7 +154,7 @@ const ImagePreviewModal = () => {
         </div>
 
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-6 py-4">
-          <div className="relative flex min-h-[280px] flex-1 items-center justify-center rounded-xl border border-slate-200 bg-blue-50/30 p-4">
+          <div className="relative flex min-h-70 flex-1 items-center justify-center rounded-xl border border-slate-200 bg-blue-50/30 p-4">
             {canGoPrevFile && (
               <Button
                 variant="icon"

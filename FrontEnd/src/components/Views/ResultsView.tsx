@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
@@ -14,22 +14,15 @@ import Loader, {
 } from "../Loader";
 import apiService from "../../services/apiService";
 import { ROUTES } from "../../models/constant";
-import { setDuplicateFilter, openPreviewModal } from "../../reducers/ui";
-import {
-  filterDuplicateClusters,
-  getDuplicateClusters,
-} from "../../selectors/duplicates";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import type { DuplicateGroup } from "../../types/api";
 import {
   formatBytes,
-  formatPathSummary,
-  getClusterKey,
   getFileKind,
-  getFileName,
   isImageFile,
   isPreviewableFile,
 } from "../../utils/fileHelpers";
+import { openPreviewModal } from "../../reducers/ui";
 
 const FileTypeIcon = ({ filePath }: { filePath: string }) => {
   const kind = getFileKind(filePath);
@@ -73,82 +66,21 @@ const ResultsView = () => {
   const duplicateFiles = useAppSelector((state) => state.files.duplicateFiles);
   const isScanning = useAppSelector((state) => state.files.isScanning);
   const scanProgress = useAppSelector((state) => state.files.scanProgress);
-  const filter = useAppSelector((state) => state.ui.duplicateFilter);
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
-
-  const clusters = useMemo(
-    () => getDuplicateClusters(duplicateFiles),
-    [duplicateFiles],
-  );
-
-  const filteredClusters = useMemo(
-    () => filterDuplicateClusters(clusters, filter),
-    [clusters, filter],
-  );
-
-  const allFilteredSelected =
-    filteredClusters.length > 0 &&
-    filteredClusters.every((group) =>
-      selectedKeys.has(getClusterKey(group.hash, group.size)),
-    );
-
-  const selectedStats = useMemo(() => {
-    let count = 0;
-    let reclaimableBytes = 0;
-
-    for (const group of clusters) {
-      const key = getClusterKey(group.hash, group.size);
-
-      if (!selectedKeys.has(key)) {
-        continue;
-      }
-
-      count += 1;
-      reclaimableBytes += group.size * (group.files.length - 1);
-    }
-
-    return { count, reclaimableBytes };
-  }, [clusters, selectedKeys]);
-
-  const handleToggleCluster = (group: DuplicateGroup) => {
-    const key = getClusterKey(group.hash, group.size);
-
-    setSelectedKeys((current) => {
-      const next = new Set(current);
-
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-
-      return next;
-    });
-  };
+  const [selectedClusters, setSelectedClusters] = useState<DuplicateGroup[]>([]);
+  const allSelected = selectedClusters.length === duplicateFiles?.duplicateGroups;
 
   const handleSelectAll = () => {
-    if (allFilteredSelected) {
-      setSelectedKeys(new Set());
-      return;
-    }
-
-    setSelectedKeys(
-      new Set(
-        filteredClusters.map((group) => getClusterKey(group.hash, group.size)),
-      ),
-    );
+    allSelected ? setSelectedClusters([]) : setSelectedClusters(duplicateFiles?.duplicates ?? []);
   };
 
-  const handleOpenPreview = (group: DuplicateGroup) => {
-    const key = getClusterKey(group.hash, group.size);
-    const previewPaths = group.files.filter(isPreviewableFile);
-
-    if (previewPaths.length === 0) {
-      return;
-    }
-
-    dispatch(openPreviewModal(key));
+  const handleToggleCluster = (cluster: DuplicateGroup) => {
+    setSelectedClusters((prev) => {
+      if (prev.includes(cluster)) {
+        return prev.filter((c) => c !== cluster);
+      }
+      return [...prev, cluster];
+    });
   };
 
   if (isScanning) {
@@ -179,7 +111,7 @@ const ResultsView = () => {
     );
   }
 
-  if (!duplicateFiles || clusters.length === 0) {
+  if (!duplicateFiles || duplicateFiles.duplicates.length === 0) {
     return (
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-8 py-24 text-center">
         <h1 className="font-['Sora'] text-2xl font-semibold text-slate-900">
@@ -206,24 +138,13 @@ const ResultsView = () => {
             {t("resultsView.title")}
           </h1>
           <p className="mt-1 text-sm text-slate-500">
-            {t("resultsView.clustersFound", { count: clusters.length })}
+            {t("resultsView.clustersFound", { count: duplicateFiles.duplicateGroups })}
           </p>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <input
-            type="search"
-            value={filter}
-            onChange={(event) =>
-              dispatch(setDuplicateFilter(event.target.value))
-            }
-            placeholder={t("resultsView.filterPlaceholder")}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 sm:w-56"
-          />
-          <Button variant="secondary" size="md" onClick={handleSelectAll}>
-            {allFilteredSelected
-              ? t("resultsView.deselectAll")
-              : t("resultsView.selectAll")}
+          <Button variant="secondary" size="md" onClick={() => handleSelectAll()}>
+            {allSelected ? t("resultsView.deselectAll") : t("resultsView.selectAll")}
           </Button>
         </div>
       </div>
@@ -255,104 +176,92 @@ const ResultsView = () => {
             </thead>
 
             <tbody className="divide-y divide-slate-100">
-              {filteredClusters.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={6}
-                    className="px-4 py-10 text-center text-sm text-slate-500"
+              {duplicateFiles.duplicates.map((group) => {
+                const key = group.hash;
+                const displayFile = group.files[0];
+                const fileName = group.files[0].split("/").pop();
+                const isSelected = selectedClusters.includes(group);
+                const hasPreview = group.files.some(isPreviewableFile);
+
+                return (
+                  <tr
+                    key={key}
+                    className={isSelected ? "bg-blue-50/60" : "bg-white"}
                   >
-                    {t("resultsView.noMatches")}
-                  </td>
-                </tr>
-              ) : (
-                filteredClusters.map((group) => {
-                  const key = getClusterKey(group.hash, group.size);
-                  const displayFile = group.files[0];
-                  const fileName = getFileName(displayFile);
-                  const pathSummary = formatPathSummary(group.files);
-                  const isSelected = selectedKeys.has(key);
-                  const hasPreview = group.files.some(isPreviewableFile);
+                    <td className="px-4 py-4">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => handleToggleCluster(group)}
+                        className="size-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
+                        aria-label={t("resultsView.selectCluster", {
+                          name: fileName,
+                        })}
+                      />
+                    </td>
 
-                  return (
-                    <tr
-                      key={key}
-                      className={isSelected ? "bg-blue-50/60" : "bg-white"}
-                    >
-                        <td className="px-4 py-4">
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => handleToggleCluster(group)}
-                            className="size-4 rounded border-slate-300 text-blue-600 focus:ring-blue-300"
-                            aria-label={t("resultsView.selectCluster", {
-                              name: fileName,
-                            })}
-                          />
-                        </td>
-
-                        <td className="px-4 py-4">
-                          {hasPreview ? (
-                            <Button
-                              variant="clear"
-                              iconOnly
-                              size="sm"
-                              className="rounded-lg p-0 hover:opacity-80"
-                              ariaLabel={t("resultsView.openPreview", {
-                                name: fileName,
-                              })}
-                              onClick={() => handleOpenPreview(group)}
-                            >
-                              <TableThumbnail filePath={displayFile} />
-                            </Button>
-                          ) : (
-                            <TableThumbnail filePath={displayFile} />
-                          )}
-                        </td>
-
-                        <td className="px-4 py-4">
-                          {hasPreview ? (
-                            <Button
-                              variant="link"
-                              className="justify-start text-left"
-                              onClick={() => handleOpenPreview(group)}
-                            >
-                              {fileName}
-                            </Button>
-                          ) : (
-                            <span className="font-medium text-slate-900">
-                              {fileName}
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="px-4 py-4 text-sm text-slate-600">
-                          {t("resultsView.copies", { count: group.files.length })}
-                        </td>
-
-                        <td
-                          className="max-w-xs px-4 py-4 text-sm text-slate-500"
-                          title={pathSummary}
+                    <td className="px-4 py-4">
+                      {hasPreview ? (
+                        <Button
+                          variant="clear"
+                          iconOnly
+                          size="sm"
+                          className="rounded-lg p-0 hover:opacity-80"
+                          ariaLabel={t("resultsView.openPreview", {
+                            name: fileName,
+                          })}
+                          onClick={() => dispatch(openPreviewModal(group.hash))}
                         >
-                          <span className="line-clamp-2">{pathSummary}</span>
-                        </td>
+                          <TableThumbnail filePath={displayFile} />
+                        </Button>
+                      ) : (
+                        <TableThumbnail filePath={displayFile} />
+                      )}
+                    </td>
 
-                        <td className="px-4 py-4 text-right text-sm text-slate-600">
-                          {formatBytes(group.size)}
-                        </td>
-                      </tr>
-                  );
-                })
-              )}
+                    <td className="px-4 py-4">
+                      {hasPreview ? (
+                        <Button
+                          variant="link"
+                          className="justify-start text-left"
+                          onClick={() => dispatch(openPreviewModal(group.hash))}
+                        >
+                          {fileName}
+                        </Button>
+                      ) : (
+                        <span className="font-medium text-slate-900">
+                          {fileName}
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="px-4 py-4 text-sm text-slate-600">
+                      {t("resultsView.copies", { count: group.files.length })}
+                    </td>
+
+                    <td
+                      className="max-w-xs px-4 py-4 text-sm text-slate-500"
+                      title={duplicateFiles.directory}
+                    >
+                      <span className="line-clamp-2">{duplicateFiles.directory}</span>
+                    </td>
+
+                    <td className="px-4 py-4 text-right text-sm text-slate-600">
+                      {formatBytes(group.size)}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-slate-200 bg-slate-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-slate-600">
-            {selectedStats.count > 0
+            {selectedClusters.length > 0
               ? t("resultsView.selectionSummary", {
-                  count: selectedStats.count,
-                  size: formatBytes(selectedStats.reclaimableBytes),
+                  count: selectedClusters.length,
+                  size: 0,
                 })
               : t("resultsView.noSelection")}
           </p>
@@ -360,7 +269,7 @@ const ResultsView = () => {
           <Button
             variant="alert"
             size="md"
-            disabled={selectedStats.count === 0}
+            disabled={selectedClusters.length === 0}
             onClick={() => {
               // MVP 2: move selected duplicates to trash
             }}

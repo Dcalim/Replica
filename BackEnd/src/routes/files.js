@@ -150,4 +150,23 @@ router.get("/preview", async (req, res, next) => {
   }
 });
 
+router.delete("/delete", async (req, res, next) => {
+  const { filePath } = req.body;
+
+  if (!filePath || typeof filePath !== "string") {
+    return res.status(400).json({ error: "A file path is required." });
+  }
+
+  try {
+    const result = await deleteDuplicates(filePath);
+
+    sendEvent({ type: "complete", result });
+    res.end();
+  } catch (err) {
+    return next(err);
+  }
+  
+  
+});
+
 module.exports = router;
