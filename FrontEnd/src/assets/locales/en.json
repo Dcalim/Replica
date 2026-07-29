@@ -46,6 +46,7 @@
         "clustersFound": "{{count}} clusters found",
         "selectAll": "Select all",
         "deselectAll": "Deselect all",
+        "selectAllNote": "Selects all but one copy per cluster, keeping the original.",
         "expandColumn": "Expand",
         "expandCluster": "Expand cluster",
         "collapseCluster": "Collapse cluster",

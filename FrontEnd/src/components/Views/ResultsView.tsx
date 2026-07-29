@@ -115,6 +115,19 @@ const ResultsView = () => {
     return { count: selectedFiles.length, reclaimableBytes };
   }, [duplicateFiles, selectedFiles]);
 
+  const allButOnePaths = useMemo(() => {
+    if (!duplicateFiles) {
+      return [];
+    }
+
+    return duplicateFiles.duplicates.flatMap((group) => group.files.slice(1));
+  }, [duplicateFiles]);
+
+  const allButOneSelected =
+    allButOnePaths.length > 0 &&
+    allButOnePaths.every((path) => selectedFiles.includes(path)) &&
+    selectedFiles.length === allButOnePaths.length;
+
   const toggleClusterExpanded = (hash: string) => {
     setExpandedClusters((current) =>
       current.includes(hash)
@@ -129,6 +142,15 @@ const ResultsView = () => {
         ? current.filter((path) => path !== filePath)
         : [...current, filePath],
     );
+  };
+
+  const handleSelectAllButOne = () => {
+    if (allButOneSelected) {
+      setSelectedFiles([]);
+      return;
+    }
+
+    setSelectedFiles(allButOnePaths);
   };
 
   const handleOpenPreview = (group: DuplicateGroup) => {
@@ -188,15 +210,32 @@ const ResultsView = () => {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col px-6 py-8 lg:px-10">
-      <div className="mb-6 text-left">
-        <h1 className="font-['Sora'] text-2xl font-semibold text-slate-900">
-          {t("resultsView.title")}
-        </h1>
-        <p className="mt-1 text-sm text-slate-500">
-          {t("resultsView.clustersFound", {
-            count: duplicateFiles.duplicateGroups,
-          })}
-        </p>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="text-left">
+          <h1 className="font-['Sora'] text-2xl font-semibold text-slate-900">
+            {t("resultsView.title")}
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            {t("resultsView.clustersFound", {
+              count: duplicateFiles.duplicateGroups,
+            })}
+          </p>
+        </div>
+
+        <div className="flex flex-col items-start gap-1.5 sm:items-end">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={handleSelectAllButOne}
+          >
+            {allButOneSelected
+              ? t("resultsView.deselectAll")
+              : t("resultsView.selectAll")}
+          </Button>
+          <p className="whitespace-nowrap text-left text-xs text-slate-500 sm:text-right">
+            {t("resultsView.selectAllNote")}
+          </p>
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
