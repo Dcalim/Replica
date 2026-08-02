@@ -42,6 +42,8 @@ const filesReducer = createSlice({
             state.duplicateFiles = null;
             state.scanProgress = null;
             state.error = null;
+            state.isScanning = false;
+            state.selectedFolderPath = null;
         },
     },
     extraReducers: (builder) => {

@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs/promises");
 const { createReadStream } = require("fs");
-const { scanForDuplicates } = require("../services/scanDuplicates");
+const { scanForDuplicates, deleteDuplicates } = require("../services/scanDuplicates");
 
 const router = express.Router();
 
@@ -151,22 +151,32 @@ router.get("/preview", async (req, res, next) => {
 });
 
 router.delete("/delete", async (req, res, next) => {
-  const { filePath } = req.body;
+  const { files } = req.body;
 
-  if (!filePath || typeof filePath !== "string") {
-    return res.status(400).json({ error: "A file path is required." });
+  if (!files || !Array.isArray(files) || files.length === 0) {
+    return res.status(400).json({ error: "A list of file paths is required." });
+  }
+
+  if (!files.every((file) => typeof file === "string")) {
+    return res.status(400).json({ error: "Each file path must be a string." });
   }
 
   try {
-    const result = await deleteDuplicates(filePath);
-
-    sendEvent({ type: "complete", result });
-    res.end();
+    const result = await deleteDuplicates(files);
+    res.json(result);
   } catch (err) {
+    if (err.status === 400) {
+      return res.status(400).json({ error: err.message });
+    }
+    if (err.code === "ENOENT") {
+      return res.status(404).json({ error: "File does not exist." });
+    }
+    if (err.code === "EACCES" || err.code === "EPERM") {
+      return res.status(403).json({ error: "Permission denied for file." });
+    }
+
     return next(err);
   }
-  
-  
 });
 
 module.exports = router;

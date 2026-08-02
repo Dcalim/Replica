@@ -9,8 +9,10 @@ const crypto = require("crypto");
 
 // Used to stream file data (better for large files than reading all at once)
 const { createReadStream } = require("fs");
-const { shell } = require("electron");
+const { execFile } = require("child_process");
+const { promisify } = require("util");
 
+const execFileAsync = promisify(execFile);
 
 // 🔍 Recursively walk through a directory and collect ALL file paths
 async function walkFiles(rootDir, callbacks = {}) {
@@ -241,23 +243,67 @@ async function scanForDuplicates(directory, onProgress) {
   };
 }
 
-async function deleteDuplicates(filePath) {
-  const stat = await fs.stat(filePath);
-  if (!stat.isDirectory()) {
-    const error = new Error("Path is not a directory.");
-    error.status = 400;
-    throw error;
+/**
+ * Move selected duplicate files to the system Trash / Recycle Bin.
+ * Uses OS tools because this service runs in plain Node (not Electron main).
+ */
+async function deleteDuplicates(files) {
+  const deleted = [];
+
+  for (const file of files) {
+    if (typeof file !== "string" || file.trim() === "") {
+      const error = new Error("Each file path must be a non-empty string.");
+      error.status = 400;
+      throw error;
+    }
+
+    const resolvedPath = path.resolve(file);
+    const stat = await fs.stat(resolvedPath);
+
+    if (!stat.isFile()) {
+      const error = new Error(`Path is not a file: ${resolvedPath}`);
+      error.status = 400;
+      throw error;
+    }
+
+    await moveToTrash(resolvedPath);
+    deleted.push(resolvedPath);
   }
 
-  const allFiles = await walkFiles(filePath, {
-    onFile: (file) => {
-      shell.trashItem(file);
-    },
-  });
-
-  return allFiles;
+  return {
+    deleted: deleted.length,
+    files: deleted,
+  };
 }
 
+async function moveToTrash(filePath) {
+  if (process.platform === "darwin") {
+    // macOS: ask Finder to move the file to Trash
+    await execFileAsync("osascript", [
+      "-e",
+      `tell application "Finder" to delete POSIX file ${JSON.stringify(filePath)}`,
+    ]);
+    return;
+  }
+
+  if (process.platform === "win32") {
+    // Windows: send to Recycle Bin via Visual Basic FileIO
+    const escaped = filePath.replace(/'/g, "''");
+    await execFileAsync("powershell.exe", [
+      "-NoProfile",
+      "-Command",
+      `Add-Type -AssemblyName Microsoft.VisualBasic; [Microsoft.VisualBasic.FileIO.FileSystem]::DeleteFile('${escaped}', 'OnlyErrorDialogs', 'SendToRecycleBin')`,
+    ]);
+    return;
+  }
+
+  // Linux: prefer gio trash; fall back to permanent delete if unavailable
+  try {
+    await execFileAsync("gio", ["trash", filePath]);
+  } catch {
+    await fs.unlink(filePath);
+  }
+}
 
 // Export function so it can be used in your API
-module.exports = { scanForDuplicates };
+module.exports = { scanForDuplicates, deleteDuplicates };

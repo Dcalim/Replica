@@ -27,6 +27,7 @@ import {
   isImageFile,
   isPreviewableFile,
 } from "../../utils/fileHelpers";
+import { clearScanState } from "../../reducers/files";
 
 const fileTypeBadgeClasses: Record<FileKind, string> = {
   image: "bg-blue-50 text-blue-700 ring-blue-100",
@@ -92,6 +93,7 @@ const ResultsView = () => {
 
   const [expandedClusters, setExpandedClusters] = useState<string[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
+  console.log(selectedFiles);
 
   const selectionStats = useMemo(() => {
     if (!duplicateFiles) {
@@ -159,6 +161,14 @@ const ResultsView = () => {
     }
 
     dispatch(openPreviewModal(group.hash));
+  };
+
+  const handleDelete = () => {
+    apiService.deleteDuplicates(selectedFiles).then(() => {
+      setSelectedFiles([]);
+    });
+
+    dispatch(clearScanState());
   };
 
   if (isScanning) {
@@ -457,9 +467,7 @@ const ResultsView = () => {
             variant="alert"
             size="md"
             disabled={selectionStats.count === 0}
-            onClick={() => {
-              // MVP 2: move selected files to trash
-            }}
+            onClick={() => handleDelete()}
           >
             {t("resultsView.moveToTrash")}
           </Button>

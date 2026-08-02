@@ -25,9 +25,9 @@ const checkHealth = async (): Promise<HealthResult> => {
 const getFilePreviewUrl = (filePath: string) =>
   `${axiosInstance.defaults.baseURL}/files/preview?path=${encodeURIComponent(filePath)}`;
 
-const deleteDuplicates = async (filePath: string): Promise<void> => {
+const deleteDuplicates = async (files: string[]): Promise<void> => {
   const { data } = await axiosInstance.delete<void>("/files/delete", {
-    data: { filePath },
+    data: { files },
   });
   return data;
 };
