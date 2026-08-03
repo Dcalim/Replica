@@ -5,15 +5,15 @@ import {
   HiChevronRight,
   HiXMark,
 } from "react-icons/hi2";
-import Button from "./Button";
-import FilePreviewDisplay from "./FilePreviewDisplay";
-import { closeModal, setPreviewClusterKey } from "../reducers/ui";
-import { useAppDispatch, useAppSelector } from "../store/store";
+import Button from "../.././Button";
+import FilePreviewDisplay from "../.././FilePreviewDisplay";
+import { closeModal, setPreviewClusterKey } from "../../../reducers/ui";
+import { useAppDispatch, useAppSelector } from "../../../store/store";
 import {
   formatBytes,
   getFileName,
   isPreviewableFile,
-} from "../utils/fileHelpers";
+} from "../../../utils/fileHelpers";
 
 const ImagePreviewModal = () => {
   const { t } = useTranslation();

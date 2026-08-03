@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import Modal from "../Modal";
+import Modal from "../ModalManager/Modal";
 import { closeModal } from "../../reducers/ui";
 import { useAppDispatch } from "../../store/store";
 

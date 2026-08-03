@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { HiOutlineCheckCircle, HiOutlineFolderOpen } from "react-icons/hi2";
 import Button from "../Button";
 import DuplicatesTable from "../DuplicatesTable/DuplicatesTable";
 import Loader, {
@@ -10,6 +11,7 @@ import Loader, {
 import { ROUTES } from "../../models/constant";
 import { setSelectedFiles } from "../../reducers/ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
+import { clearScanState } from "../../reducers/files";
 
 const ResultsView = () => {
   const navigate = useNavigate();
@@ -60,10 +62,11 @@ const ResultsView = () => {
     );
   }
 
-  if (!duplicateFiles || duplicateFiles.duplicates.length === 0) {
+  // No scan has been run yet
+  if (!duplicateFiles) {
     return (
-      <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-8 py-24 text-center">
-        <h1 className="font-['Sora'] text-2xl font-semibold text-slate-900">
+      <div className="m-auto flex w-full max-w-2xl flex-col items-center text-center">
+        <h1 className="mt-6 font-['Sora'] text-2xl font-semibold text-slate-900">
           {t("resultsView.emptyTitle")}
         </h1>
         <p className="mt-2 text-sm text-slate-500">{t("resultsView.empty")}</p>
@@ -74,6 +77,45 @@ const ResultsView = () => {
           onClick={() => navigate(ROUTES.SCAN)}
         >
           {t("resultsView.startScan")}
+        </Button>
+      </div>
+    );
+  }
+
+  // Scan finished, but no duplicate groups were found
+  if (duplicateFiles.duplicates.length === 0) {
+    return (
+      <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-8 py-24 text-center">
+        <span className="flex size-16 items-center justify-center rounded-2xl bg-emerald-50 ring-1 ring-emerald-100">
+          <HiOutlineCheckCircle className="size-8 text-emerald-600" aria-hidden />
+        </span>
+        <h1 className="mt-6 font-['Sora'] text-2xl font-semibold text-slate-900">
+          {t("resultsView.noDuplicatesTitle")}
+        </h1>
+        <p className="mt-2 text-sm text-slate-500">
+          {t("resultsView.noDuplicates")}
+        </p>
+        <p className="mt-4 max-w-md text-sm text-slate-600">
+          {t("resultsView.noDuplicatesScanned", {
+            count: duplicateFiles.scannedFiles,
+          })}{" "}
+          <span
+            className="font-mono text-xs text-slate-500"
+            title={duplicateFiles.directory}
+          >
+            {duplicateFiles.directory}
+          </span>
+        </p>
+        <Button
+          variant="primary"
+          size="md"
+          className="mt-8"
+          onClick={() => {
+            dispatch(clearScanState());
+            navigate(ROUTES.SCAN)
+          }}
+        >
+          {t("resultsView.scanAnotherFolder")}
         </Button>
       </div>
     );
