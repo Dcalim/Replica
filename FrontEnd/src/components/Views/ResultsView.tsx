@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { HiOutlineCheckCircle, HiOutlineFolderOpen } from "react-icons/hi2";
+import { HiOutlineCheckCircle } from "react-icons/hi2";
 import Button from "../Button";
 import DuplicatesTable from "../DuplicatesTable/DuplicatesTable";
 import Loader, {

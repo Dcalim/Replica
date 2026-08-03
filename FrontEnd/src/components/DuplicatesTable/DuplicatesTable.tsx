@@ -3,8 +3,10 @@ import { useTranslation } from "react-i18next";
 import Button from "../Button";
 import ClusterRow from "./ClusterRow";
 import apiService from "../../services/apiService";
+import { ApiError } from "../../services/axiosInterceptor";
 import { ROUTES } from "../../models/constant";
 import { clearScanState } from "../../reducers/files";
+import { showBanner } from "../../reducers/ui";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { formatBytes } from "../../utils/fileHelpers";
 
@@ -39,9 +41,33 @@ const DuplicatesTable = () => {
       return;
     }
 
-    await apiService.deleteDuplicates(selectedFiles);
-    dispatch(clearScanState());
-    navigate(ROUTES.SCAN);
+    const count = selectedFiles.length;
+
+    try {
+      await apiService.deleteDuplicates(selectedFiles);
+      dispatch(
+        showBanner({
+          variant: "success",
+          title: t("resultsView.deleteSuccessTitle"),
+          message: t("resultsView.deleteSuccessMessage", { count }),
+        }),
+      );
+      dispatch(clearScanState());
+      navigate(ROUTES.SCAN);
+    } catch (error) {
+      const message =
+        error instanceof ApiError
+          ? error.message
+          : t("resultsView.deleteErrorMessage");
+
+      dispatch(
+        showBanner({
+          variant: "error",
+          title: t("resultsView.deleteErrorTitle"),
+          message,
+        }),
+      );
+    }
   };
 
   return (

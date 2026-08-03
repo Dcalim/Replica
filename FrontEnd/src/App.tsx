@@ -4,7 +4,8 @@ import ScanView from "./components/Views/ScanView";
 import ResultsView from "./components/Views/ResultsView";
 import DashboardView from "./components/Views/DashboardView";
 import HistoryView from "./components/Views/HistoryView";
-import ModalManager from "./components/ModalManager";
+import ModalManager from "./components/ModalManager/ModalManager";
+import BannerManager from "./components/BannerManager";
 import { ROUTES } from "./models/constant";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
     <div className="min-h-screen bg-linear-to-b from-white via-slate-50 to-blue-50/40 text-slate-900">
       <SideBarMenu />
       <div className={`min-h-screen ${SIDEBAR_MARGIN}`}>
+        <BannerManager />
         <ModalManager />
         <main className="flex min-h-screen flex-col">
           <Routes>

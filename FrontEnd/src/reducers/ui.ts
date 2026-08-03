@@ -1,6 +1,14 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { MODAL_VIEWS, type ModalView } from '../models/constant'
+import type { BannerVariant } from '../models/banner'
 import { clearScanState, scanFolder } from './files'
+
+export type BannerState = {
+  id: number;
+  variant: BannerVariant;
+  title?: string;
+  message: string;
+};
 
 const initialState = {
   isUploading: false,
@@ -8,6 +16,7 @@ const initialState = {
   previewClusterKey: null as string | null,
   selectedFiles: [] as string[],
   expandedClusters: [] as string[],
+  banner: null as BannerState | null,
 }
 
 const uiReducer = createSlice({
@@ -59,6 +68,24 @@ const uiReducer = createSlice({
         state.expandedClusters.push(hash);
       }
     },
+    showBanner: (
+      state,
+      action: PayloadAction<{
+        variant: BannerVariant;
+        title?: string;
+        message: string;
+      }>,
+    ) => {
+      state.banner = {
+        id: Date.now(),
+        variant: action.payload.variant,
+        title: action.payload.title,
+        message: action.payload.message,
+      };
+    },
+    clearBanner: (state) => {
+      state.banner = null;
+    },
   },
   extraReducers: (builder) => {
     const resetResultsUi = (state: typeof initialState) => {
@@ -83,5 +110,7 @@ export const {
   setSelectedFiles,
   clearSelectedFiles,
   toggleClusterExpanded,
+  showBanner,
+  clearBanner,
 } = uiReducer.actions;
 export default uiReducer.reducer;
