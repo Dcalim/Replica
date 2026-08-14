@@ -5,8 +5,8 @@ import {
   HiOutlineExclamationTriangle,
   HiXMark,
 } from "react-icons/hi2";
-import Button from "./Button";
-import type { BannerVariant } from "../models/banner";
+import Button from "../Button";
+import type { BannerVariant } from "../../models/banner";
 
 export interface BannerProps {
   variant?: BannerVariant;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Banner from "./Banner";
-import { useAppDispatch, useAppSelector } from "../store/store";
-import { clearBanner } from "../reducers/ui";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { clearBanner } from "../../reducers/ui";
 
 const AUTO_DISMISS_MS = 5000;
 
