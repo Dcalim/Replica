@@ -27,6 +27,7 @@ function startBackend() {
       ...process.env,
       PORT: BACKEND_PORT,
       NODE_ENV: isDev ? "development" : "production",
+      DATABASE_PATH: path.join(app.getPath("userData"), "replica.sqlite"),
     },
     stdio: "inherit",
   });
