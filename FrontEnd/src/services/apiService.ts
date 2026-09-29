@@ -2,9 +2,14 @@ import axiosInstance from "./axiosInterceptor";
 import { scanFolderWithProgress } from "./scanStream";
 import type {
   HealthResult,
+  HistoryResult,
+  RestoreResult,
   ScanFolderRequest,
   ScanProgressEvent,
   ScanResult,
+  ScanRetentionDays,
+  Settings,
+  UpdateSettingsResult,
 } from "../types/api";
 
 const scanFolder = async (directory: string): Promise<ScanResult> => {
@@ -25,9 +30,38 @@ const checkHealth = async (): Promise<HealthResult> => {
 const getFilePreviewUrl = (filePath: string) =>
   `${axiosInstance.defaults.baseURL}/files/preview?path=${encodeURIComponent(filePath)}`;
 
-const deleteDuplicates = async (files: string[]): Promise<void> => {
+const deleteDuplicates = async (
+  files: string[],
+  scanId?: number | null,
+): Promise<void> => {
   const { data } = await axiosInstance.delete<void>("/files/delete", {
-    data: { files },
+    data: { files, scanId: scanId ?? undefined },
+  });
+  return data;
+};
+
+const getHistory = async (): Promise<HistoryResult> => {
+  const { data } = await axiosInstance.get<HistoryResult>("/history");
+  return data;
+};
+
+const restoreDeletedFiles = async (ids: number[]): Promise<RestoreResult> => {
+  const { data } = await axiosInstance.post<RestoreResult>("/history/restore", {
+    ids,
+  });
+  return data;
+};
+
+const getSettings = async (): Promise<Settings> => {
+  const { data } = await axiosInstance.get<Settings>("/settings");
+  return data;
+};
+
+const updateScanRetention = async (
+  scanRetentionDays: ScanRetentionDays,
+): Promise<UpdateSettingsResult> => {
+  const { data } = await axiosInstance.put<UpdateSettingsResult>("/settings", {
+    scanRetentionDays,
   });
   return data;
 };
@@ -38,6 +72,10 @@ const apiService = {
   checkHealth,
   getFilePreviewUrl,
   deleteDuplicates,
+  getHistory,
+  restoreDeletedFiles,
+  getSettings,
+  updateScanRetention,
 };
 
 export type { ScanProgressEvent };

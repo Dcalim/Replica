@@ -6,11 +6,11 @@ export const ROUTES = {
   DUPLICATES: "/duplicates",
   DASHBOARD: "/dashboard",
   HISTORY: "/history",
+  SETTINGS: "/settings",
 } as const;
 
 export const MODAL_VIEWS = {
   NONE: "none",
-  SETTINGS: "settings",
   PREVIEW: "preview",
 } as const;
 

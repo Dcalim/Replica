@@ -22,6 +22,7 @@ export const scanFolder = createAsyncThunk(
 
 const initialState = {
     selectedFolderPath: null as string | null,
+    activeDirectory: null as string | null,
     duplicateFiles: null as ScanResult | null,
     isScanning: false,
     scanProgress: null as ScanProgress | null,
@@ -44,12 +45,14 @@ const filesReducer = createSlice({
             state.error = null;
             state.isScanning = false;
             state.selectedFolderPath = null;
+            state.activeDirectory = null;
         },
     },
     extraReducers: (builder) => {
-        builder.addCase(scanFolder.pending, (state) => {
+        builder.addCase(scanFolder.pending, (state, action) => {
             state.isScanning = true;
             state.error = null;
+            state.activeDirectory = action.meta.arg;
             state.scanProgress = {
                 phase: "discovering",
                 current: 0,
@@ -60,6 +63,7 @@ const filesReducer = createSlice({
         builder.addCase(scanFolder.fulfilled, (state, action) => {
             state.isScanning = false;
             state.duplicateFiles = action.payload;
+            state.activeDirectory = action.payload.directory;
             state.scanProgress = null;
         });
         builder.addCase(scanFolder.rejected, (state, action) => {

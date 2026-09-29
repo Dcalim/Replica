@@ -43,6 +43,19 @@ const migrations = [
       CREATE INDEX idx_deleted_files_deleted_at ON deleted_files (deleted_at DESC);
     `);
   },
+  (db) => {
+    db.exec(`
+      ALTER TABLE deleted_files ADD COLUMN recovery_path TEXT;
+    `);
+  },
+  (db) => {
+    db.exec(`
+      CREATE TABLE settings (
+        key TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+    `);
+  },
 ];
 
 module.exports = { migrations };

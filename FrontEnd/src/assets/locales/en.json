@@ -12,9 +12,25 @@
         "dashboard": "Dashboard",
         "history": "History"
     },
-    "settingsModal": {
-        "heading": "Settings",
-        "description": "Settings coming soon."
+    "settingsView": {
+        "title": "Settings",
+        "subtitle": "Control what Replica keeps on this computer.",
+        "loading": "Loading settings…",
+        "retry": "Try again",
+        "loadErrorMessage": "Could not load settings.",
+        "storageHeading": "Local storage",
+        "retentionLabel": "Keep past scans for",
+        "retentionDescription": "Scans older than this are removed from History, along with saved file hashes that haven't been seen since. Rescans of those folders will hash files again.",
+        "retentionNote": "Removed files that can still be restored are never deleted by this setting. They stay in History under \"Other removed files\".",
+        "retentionForever": "Forever",
+        "retentionDays_one": "{{count}} day",
+        "retentionDays_other": "{{count}} days",
+        "saveSuccessTitle": "Settings saved",
+        "saveSuccessMessage": "Past scans will be kept for {{retention}}.",
+        "saveSuccessPruned_one": "Past scans will be kept for {{retention}}. Removed {{count}} older scan.",
+        "saveSuccessPruned_other": "Past scans will be kept for {{retention}}. Removed {{count}} older scans.",
+        "saveErrorTitle": "Couldn't save settings",
+        "saveErrorMessage": "Something went wrong while saving. Please try again."
     },
     "scanView": {
         "title": "Find duplicate files and free up space on your computer.",
@@ -40,6 +56,7 @@
     },
     "resultsView": {
         "title": "Duplicate files",
+        "scannedFolder": "Scanned folder",
         "emptyTitle": "No duplicates found yet",
         "empty": "Run a scan from the Scan page to find duplicate files in a folder.",
         "startScan": "Go to Scan",
@@ -48,6 +65,7 @@
         "noDuplicatesScanned": "Scanned {{count}} files in",
         "scanAnotherFolder": "Scan another folder",
         "clustersFound": "{{count}} clusters found",
+        "reusedHashes": "Reused {{reused}} saved hashes from earlier scans, hashed {{computed}} new or changed files.",
         "selectAll": "Select all",
         "deselectAll": "Deselect all",
         "selectAllNote": "Selects all but one copy per cluster, keeping the original.",
@@ -73,11 +91,11 @@
         "selectionSummary": "{{count}} selected — {{size}} recoverable",
         "fileSelectionSummary": "{{count}} files selected — {{size}} recoverable",
         "selectFile": "Select {{name}}",
-        "moveToTrash": "Move to trash",
-        "deleteSuccessTitle": "Moved to trash",
-        "deleteSuccessMessage": "{{count}} file(s) were moved to your system Trash.",
-        "deleteErrorTitle": "Couldn't move to trash",
-        "deleteErrorMessage": "Something went wrong while moving files to Trash. Please try again.",
+        "moveToTrash": "Remove duplicates",
+        "deleteSuccessTitle": "Files removed",
+        "deleteSuccessMessage": "{{count}} file(s) were moved to recovery. You can restore them from History.",
+        "deleteErrorTitle": "Couldn't remove files",
+        "deleteErrorMessage": "Something went wrong while removing files. Please try again.",
         "previewLabel": "Preview",
         "previewCounter": "Image {{current}} of {{total}}",
         "previewPaths": "Duplicate locations",
@@ -105,7 +123,44 @@
         },
         "review": {
             "title": "You Stay in Control",
-            "description": "Review every duplicate group before removing anything. Selected files are moved to your system Trash."
+            "description": "Review every duplicate group before removing anything. Selected files go to a local recovery folder so you can restore them later."
+        }
+    },
+    "historyView": {
+        "title": "History",
+        "subtitle": "Review past scans and restore files you removed.",
+        "loading": "Loading history…",
+        "retry": "Try again",
+        "loadErrorMessage": "Could not load history.",
+        "emptyTitle": "No history yet",
+        "empty": "Run a scan and remove duplicates to see them here.",
+        "scansHeading": "Past scans",
+        "noScans": "No scans recorded yet.",
+        "otherDeletesHeading": "Other removed files",
+        "noDeletesForScan": "No files were removed from this scan.",
+        "selectColumn": "Select",
+        "fileColumn": "File",
+        "sizeColumn": "Size",
+        "deletedAtColumn": "Removed",
+        "statusColumn": "Status",
+        "selectFile": "Select {{name}}",
+        "rescan": "Rescan",
+        "selectScanFiles": "Select recoverable",
+        "deselectScanFiles": "Deselect",
+        "statusRecoverable": "Recoverable",
+        "statusRestored": "Restored",
+        "statusUnavailable": "Unavailable",
+        "restoreSelected": "Restore selected ({{count}})",
+        "restoring": "Restoring…",
+        "restoreSuccessTitle": "Files restored",
+        "restoreSuccessMessage": "{{count}} file(s) were restored to their original locations.",
+        "restoreErrorTitle": "Couldn't restore files",
+        "restoreErrorMessage": "Something went wrong while restoring files. Please try again.",
+        "scanSummary": "{{date}} · {{files}} files · {{groups}} clusters · {{deleted}} removed · {{size}} reclaimable · {{status}}",
+        "scanStatus": {
+            "running": "Running",
+            "completed": "Completed",
+            "failed": "Failed"
         }
     },
     "folderSelector": {

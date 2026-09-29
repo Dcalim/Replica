@@ -4,6 +4,7 @@ import ScanView from "./components/Views/ScanView";
 import ResultsView from "./components/Views/ResultsView";
 import DashboardView from "./components/Views/DashboardView";
 import HistoryView from "./components/Views/HistoryView";
+import SettingsView from "./components/Views/SettingsView";
 import ModalManager from "./components/ModalManager/ModalManager";
 import BannerManager from "./components/BannerManager/BannerManager";
 import { ROUTES } from "./models/constant";
@@ -21,6 +22,7 @@ function App() {
             <Route path={ROUTES.DUPLICATES} element={<ResultsView />} />
             <Route path={ROUTES.DASHBOARD} element={<DashboardView />} />
             <Route path={ROUTES.HISTORY} element={<HistoryView />} />
+            <Route path={ROUTES.SETTINGS} element={<SettingsView />} />
             <Route path="*" element={<Navigate to={ROUTES.SCAN} replace />} />
           </Routes>
         </main>

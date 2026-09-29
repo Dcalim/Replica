@@ -9,11 +9,7 @@ import {
 } from "react-icons/hi2";
 import { IoSettingsOutline } from "react-icons/io5";
 import Logo from "../assets/icons/ReplicaLogoAlt.png";
-import Button from "./Button";
 import { ROUTES, type AppRoute } from "../models/constant";
-import { useAppDispatch } from "../store/store";
-import { setModalView } from "../reducers/ui";
-import { MODAL_VIEWS } from "../models/constant";
 
 type NavItem = {
   route: AppRoute;
@@ -46,7 +42,6 @@ const navItems: NavItem[] = [
 
 const SideBarMenu = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const itemClass = (isActive: boolean) =>
     [
       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition",
@@ -86,16 +81,13 @@ const SideBarMenu = () => {
       </nav>
 
       <div className="shrink-0 border-t border-slate-100 p-2">
-        <Button
-          variant="clear"
-          size="md"
-          className="w-full justify-start gap-3 px-3"
-          ariaLabel={t("header.settings")}
-          onClick={() => dispatch(setModalView(MODAL_VIEWS.SETTINGS))}
+        <NavLink
+          to={ROUTES.SETTINGS}
+          className={({ isActive }) => itemClass(isActive)}
         >
-          <IoSettingsOutline className="size-5 shrink-0 text-slate-700" aria-hidden />
-          <span className="text-sm text-slate-600">{t("header.settings")}</span>
-        </Button>
+          <IoSettingsOutline className="size-5 shrink-0" aria-hidden />
+          <span className="truncate">{t("header.settings")}</span>
+        </NavLink>
       </div>
     </aside>
   );

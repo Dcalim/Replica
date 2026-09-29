@@ -13,6 +13,14 @@ function getDbPath() {
   return path.join(__dirname, "../../data/replica.sqlite");
 }
 
+function getRecoveryPath() {
+  if (process.env.RECOVERY_PATH) {
+    return process.env.RECOVERY_PATH;
+  }
+
+  return path.join(path.dirname(getDbPath()), "recovery");
+}
+
 function migrate(database) {
   database.exec(`
     CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -53,7 +61,7 @@ function openDatabase() {
   db = new Database(dbPath);
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
-  migrate(db);
+  migrate(db); // adds schemas and migrations to the database
 
   console.log(`SQLite ready at ${dbPath}`);
   return db;
@@ -79,4 +87,5 @@ module.exports = {
   getDb,
   closeDatabase,
   getDbPath,
+  getRecoveryPath,
 };

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { HiOutlineCheckCircle } from "react-icons/hi2";
 import Button from "../Button";
 import DuplicatesTable from "../DuplicatesTable/DuplicatesTable";
+import ScannedFolderHeader from "../ScannedFolderHeader";
 import Loader, {
   buildProgressLabel,
   buildProgressPhaseLabel,
@@ -20,6 +21,7 @@ const ResultsView = () => {
   const duplicateFiles = useAppSelector((state) => state.files.duplicateFiles);
   const isScanning = useAppSelector((state) => state.files.isScanning);
   const scanProgress = useAppSelector((state) => state.files.scanProgress);
+  const activeDirectory = useAppSelector((state) => state.files.activeDirectory);
   const selectedFiles = useAppSelector((state) => state.ui.selectedFiles);
 
   const allButOnePaths =
@@ -41,6 +43,9 @@ const ResultsView = () => {
 
     return (
       <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-8 py-24">
+        {activeDirectory && (
+          <ScannedFolderHeader directory={activeDirectory} className="mb-6" />
+        )}
         <Loader
           show
           mode="progress"
@@ -123,6 +128,8 @@ const ResultsView = () => {
 
   return (
     <div className="mx-auto flex w-full max-w-6xl flex-col px-6 py-8 lg:px-10">
+      <ScannedFolderHeader directory={duplicateFiles.directory} className="mb-6" />
+
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="text-left">
           <h1 className="font-['Sora'] text-2xl font-semibold text-slate-900">
@@ -133,6 +140,14 @@ const ResultsView = () => {
               count: duplicateFiles.duplicateGroups,
             })}
           </p>
+          {duplicateFiles.reusedHashes > 0 && (
+            <p className="mt-1 text-xs text-slate-500">
+              {t("resultsView.reusedHashes", {
+                reused: duplicateFiles.reusedHashes,
+                computed: duplicateFiles.computedHashes,
+              })}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-col items-start gap-1.5 sm:items-end">

@@ -151,7 +151,7 @@ router.get("/preview", async (req, res, next) => {
 });
 
 router.delete("/delete", async (req, res, next) => {
-  const { files } = req.body;
+  const { files, scanId } = req.body;
 
   if (!files || !Array.isArray(files) || files.length === 0) {
     return res.status(400).json({ error: "A list of file paths is required." });
@@ -161,8 +161,15 @@ router.delete("/delete", async (req, res, next) => {
     return res.status(400).json({ error: "Each file path must be a string." });
   }
 
+  if (
+    scanId != null &&
+    !(Number.isInteger(scanId) && scanId > 0)
+  ) {
+    return res.status(400).json({ error: "scanId must be a positive integer." });
+  }
+
   try {
-    const result = await deleteDuplicates(files);
+    const result = await deleteDuplicates(files, scanId ?? null);
     res.json(result);
   } catch (err) {
     if (err.status === 400) {

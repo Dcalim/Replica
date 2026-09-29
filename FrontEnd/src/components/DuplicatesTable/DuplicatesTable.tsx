@@ -16,6 +16,7 @@ const DuplicatesTable = () => {
   const navigate = useNavigate();
   const clusters =
     useAppSelector((state) => state.files.duplicateFiles?.duplicates) ?? [];
+  const scanId = useAppSelector((state) => state.files.duplicateFiles?.scanId);
   const selectedFiles = useAppSelector((state) => state.ui.selectedFiles);
 
   const selectionStats = (() => {
@@ -44,7 +45,7 @@ const DuplicatesTable = () => {
     const count = selectedFiles.length;
 
     try {
-      await apiService.deleteDuplicates(selectedFiles);
+      await apiService.deleteDuplicates(selectedFiles, scanId);
       dispatch(
         showBanner({
           variant: "success",
