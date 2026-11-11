@@ -5,7 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "test": "jest --silent",
+    "test:logic": "jest --silent tests/logic",
+    "test:isp": "jest --silent tests/isp",
+    "test:coverage": "jest --silent --coverage --collectCoverageFrom=src/**/*.js"
   },
   "keywords": [],
   "author": "",
@@ -16,5 +20,14 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "supertest": "^7.3.2"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 20000,
+    "testRegex": "tests/.*\\.test\\.js$"
   }
 }

@@ -9,13 +9,20 @@
     "dev:frontend": "npm run dev --prefix FrontEnd",
     "dev:backend": "npm run dev --prefix BackEnd",
     "dev:electron": "wait-on http://localhost:5173 http://localhost:3001/api/health && electron .",
+    "test:frontend": "npm test --prefix FrontEnd",
+    "test:backend": "npm test --prefix BackEnd",
+    "test:report": "node scripts/test-report.js",
     "build:frontend": "npm run build --prefix FrontEnd",
     "start": "npm run build:frontend && electron .",
     "postinstall": "npm install --prefix FrontEnd && npm install --prefix BackEnd"
   },
   "devDependencies": {
+    "@types/jest": "^30.0.0",
     "concurrently": "^9.2.1",
     "electron": "^35.7.5",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.15",
+    "typescript": "^7.0.2",
     "wait-on": "^8.0.5"
   }
 }
