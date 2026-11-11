@@ -8,3 +8,9 @@ release/
 *.sqlite
 *.sqlite-wal
 *.sqlite-shm
+
+coverage/
+backend/coverage/
+frontend/coverage/
+
+reports/
